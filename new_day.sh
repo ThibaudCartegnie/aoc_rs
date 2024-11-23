@@ -2,7 +2,7 @@
 
 . .env
 day_id=$((1 + $day))
-session_cookie=""
+session_cookie=$cookie
 fmt_day=$(printf "%02d" $day_id)
 new_file=src/y$year/day$fmt_day.rs
 year_file=src/y$year/mod.rs
@@ -17,4 +17,4 @@ curl -o input/d$day_id.txt --cookie "session=$session_cookie" https://adventofco
 
 sed -i "s/day=$day/day=$day_id/" .env
 
-echo "Get the challenge for day $day_id  Here : https://adventofcode.com/2023/day/$day_id"
+echo "Get the challenge for day $day_id  Here : https://adventofcode.com/$year/day/$day_id"
