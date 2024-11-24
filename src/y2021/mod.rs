@@ -1,6 +1,6 @@
 mod day01;
-// mod day02;
-// mod day03;
+mod day02;
+mod day03;
 // mod day04;
 // mod day05;
 // mod day06;
@@ -29,11 +29,11 @@ use crate::common::{Day, Year};
 pub struct Year2021;
 
 impl Year for Year2021 {
-    fn get_day(&self, day: usize) -> Option<impl Day> {
+    fn get_day(&self, day: usize) -> Option<Box<dyn Day>> {
         match day {
-            1 => Some(day01::Day01),
-//             2 => Some(day02::Day02),
-//             3 => Some(day03::Day03),
+            1 => Some(Box::new(day01::Day01)),
+            2 => Some(Box::new(day02::Day02)),
+            3 => Some(Box::new(day03::Day03)),
 //             4 => Some(day04::Day04),
 //             5 => Some(day05::Day05),
 //             6 => Some(day06::Day06),
@@ -63,8 +63,8 @@ impl Year for Year2021 {
     fn days(&self) -> Vec<usize> {
         vec!(
             1,
-            // 2,
-            // 3,
+            2,
+            3,
             // 4,
             // 5,
             // 6,

@@ -11,6 +11,6 @@ pub trait Day {
 }
 
 pub trait Year {
-    fn get_day(&self, day: usize) -> Option<impl Day>;
+    fn get_day(&self, day: usize) -> Option<Box<dyn Day>>;
     fn days(&self) -> Vec<usize>;
 }

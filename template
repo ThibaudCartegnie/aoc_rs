@@ -2,12 +2,13 @@ use crate::common::Day;
 
 pub struct Day01;
 
+#[allow(unused)]
 impl Day for Day01 {
     fn solve_part1(&self, input: &str) -> String {
-        todo!()
+        format!("")
     }
 
     fn solve_part2(&self, input: &str) -> String {
-        todo!()
+        format!("")
     }
 }

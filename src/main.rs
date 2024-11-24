@@ -2,7 +2,7 @@ mod common;
 mod y2021;
 use std::fs;
 
-use common::{Day, Year};
+use common::Year;
 use clap::Parser;
 
 
@@ -16,7 +16,10 @@ struct Args {
     day: Option<usize>,
 
     #[arg(short, long, default_value = None)]
-    part: Option<usize>
+    part: Option<usize>,
+
+    #[arg(long)]
+    all: bool
 
 }
 
@@ -24,31 +27,47 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let year = match args.year {
-        Some(y) => {
-            get_year(y).unwrap()
-        },
-        None => {
-            get_year(years().pop().unwrap().to_owned()).unwrap()
+    if args.all {
+        match args.year {
+            Some(year) => {
+                run_all_days(year);
+            },
+            None => {
+                for year in years() {
+                    run_all_days(year);
+                }
+            }
         }
-    };
+    } else {
+        let year_nb = args.year.unwrap_or(years().pop().unwrap().to_owned());
+        let year = get_year(year_nb).unwrap();
+        let day_nb = args.day.unwrap_or(year.days().pop().unwrap().to_owned());
+        let day = year.get_day(day_nb).unwrap();
+        let input = fs::read_to_string(format!("input/y{year_nb}/d{}.txt", day_nb)).unwrap();
+        println!("Running year {}, day {}", year_nb, day_nb);
+        match args.part {
+            Some(1) => println!("Result for part 1 : {}", day.solve_part1(&input)),
+            Some(2) => println!("Result for part 2 : {}", day.solve_part2(&input)),
+            Some(_) => panic!("Part can be 1 or 2, do not specify to run both."),
+            None => day.run(&input),
+        }
+    }
 
-    let day_nb = args.day.unwrap_or(year.days().pop().unwrap().to_owned());
-    let day = year.get_day(day_nb).unwrap();
+}
 
-    let input = fs::read_to_string(format!("input/day{:02}.txt", day_nb)).unwrap();
-
-    match args.part {
-        Some(1) => println!("Result for part 1 : {}", day.solve_part1(&input)),
-        Some(2) => println!("Result for part 2 : {}", day.solve_part2(&input)),
-        Some(_) => panic!("Part can be 1 or 2, do not specify to run both."),
-        None => day.run(&input),
+fn run_all_days(year: usize) {
+    println!("Running all challenges from year {}", year);
+    let y = get_year(year).unwrap();
+    for day in y.days() {
+        println!("Day {}:", day);
+        let input = fs::read_to_string(format!("input/y{}/d{}.txt", year, day)).unwrap();
+        y.get_day(day).unwrap().run(&input);
     }
 }
 
-fn get_year(year: usize) -> Option<impl Year> {
+fn get_year(year: usize) -> Option<Box<dyn Year>> {
     match year {
-        2021 => Some(y2021::Year2021),
+        2021 => Some(Box::new(y2021::Year2021)),
         _ => None
     }
 }
