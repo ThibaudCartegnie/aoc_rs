@@ -1,5 +1,6 @@
 mod common;
 mod y2021;
+mod y2024;
 use std::fs;
 
 use common::Year;
@@ -101,9 +102,10 @@ fn run_all_days(year: usize, example_if_any: bool) {
 fn get_year(year: usize) -> Option<Box<dyn Year>> {
     match year {
         2021 => Some(Box::new(y2021::Year2021)),
+        2024 => Some(Box::new(y2024::Year2024)),
         _ => None
     }
 }
 fn years() -> Vec<usize> {
-    vec!(2021)
+    vec!(2021, 2024)
 }
