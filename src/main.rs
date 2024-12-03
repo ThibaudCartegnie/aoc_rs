@@ -29,16 +29,17 @@ struct Args {
 
 
 fn main() {
+    let start = std::time::Instant::now();
     let args = Args::parse();
 
     if args.all {
         match args.year {
             Some(year) => {
-                run_all_days(year, args.example_if_any);
+                run_year(year, args.example_if_any);
             },
             None => {
                 for year in years() {
-                    run_all_days(year, args.example_if_any);
+                    run_year(year, args.example_if_any);
                 }
             }
         }
@@ -49,6 +50,12 @@ fn main() {
         run_day(year_nb, day_nb, args.example_if_any, args.part);
     }
 
+    let us = start.elapsed().as_micros();
+    let ms = us/1000;
+    let us = us - 1000*ms;
+
+    println!("Program ran in {}ms and {}µs", ms, us);
+
 }
 
 fn run_day(year_nb: usize, day_nb: usize, example_if_any: bool, part: Option<usize>) {
@@ -56,12 +63,17 @@ fn run_day(year_nb: usize, day_nb: usize, example_if_any: bool, part: Option<usi
     let day = year.get_day(day_nb).unwrap();
     let input = get_input(year_nb, day_nb, example_if_any);
     println!("Running year {}, day {}", year_nb, day_nb);
+    let start = std::time::Instant::now();
     match part {
         Some(1) => println!("Result for part 1 : {}", day.solve_part1(&input)),
         Some(2) => println!("Result for part 2 : {}", day.solve_part2(&input)),
         Some(_) => panic!("Part can be 1 or 2, do not specify to run both."),
         None => day.run(&input),
     }
+    let us = start.elapsed().as_micros();
+    let ms = us/1000;
+    let us = us - 1000*ms;
+    println!("Day {} from year {} ran in {}ms and {}µs",day_nb, year_nb, ms, us);
 }
 
 fn get_input(year: usize, day: usize, example_if_any: bool) -> String {
@@ -91,12 +103,17 @@ fn download_input(year: usize, day: usize) {
     fs::write(path, resp).unwrap();
 }
 
-fn run_all_days(year: usize, example_if_any: bool) {
+fn run_year(year: usize, example_if_any: bool) {
     println!("Running all challenges from year {}", year);
     let y = get_year(year).unwrap();
+    let start = std::time::Instant::now();
     for day in y.days() {
         run_day(year, day, example_if_any, None);
     }
+    let us = start.elapsed().as_micros();
+    let ms = us/1000;
+    let us = us - 1000*ms;
+    println!("Year {} ran in {}ms and {}µs", year, ms, us);
 }
 
 fn get_year(year: usize) -> Option<Box<dyn Year>> {
