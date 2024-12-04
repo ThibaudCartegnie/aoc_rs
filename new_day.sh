@@ -19,3 +19,4 @@ curl -o input/y$year/d$day_id.txt --cookie "session=$session_cookie" https://adv
 sed -i "s/day=$day/day=$day_id/" .env
 
 echo "Get the challenge for day $day_id  Here : https://adventofcode.com/$year/day/$day_id"
+echo "Start the challenge for day $day_id  Here : $new_file"
