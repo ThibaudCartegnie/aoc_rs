@@ -41,7 +41,6 @@ impl Day for Day06 {
 
     fn solve_part2(&self, input: &str) -> String {
         let mut map: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
-        let orig_map = map.clone();
         // let mut map: Vec<&[u8]> = input.lines().map(str::as_bytes).collect();
         let h = map.len();
         let w = map[0].len();
@@ -125,7 +124,7 @@ fn solve_maze(map: &Vec<&[u8]>) -> End {
 fn solve_maze_char(map: &Vec<Vec<char>>) -> End {
     let mut guard: (isize, isize) = map.iter().enumerate().filter_map(|(i, l)|_find_guard_char((i, &l))).next().unwrap();
     // map[guard.1][guard.0] as char == '^'
-    let mut res = 0;
+    let res = 0;
     let dirs = [(-1,0), (0,1), (1,0), (0,-1)];
     let mut dir_idx = 0;
     let mut visited_with_dirs = HashSet::new();
