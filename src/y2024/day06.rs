@@ -22,20 +22,20 @@ fn get(map: &Vec<Vec<char>>, i: isize, j: isize) -> Option<char> {
 impl Day for Day06 {
     fn solve_part1(&self, input: &str) -> String {
         let map: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
-        println!("Should be 4602");
-        let res = if let End::Out(n, _) = solve_maze(&map) {
+        let res = if let End::Out(n, _) = solve_maze(&map, true) {
             n
         } else {
             panic!("Bugged input :'(");
         };
-        assert!(4602 == res);
+        // println!("Should be 4602");
+        // assert!(4602 == res);
         format!("{}", res)
     }
 
     fn solve_part2(&self, input: &str) -> String {
         let mut map: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
         let mut res = 0;
-        let normal_path =  if let End::Out(_, v) = solve_maze(&map) {
+        let normal_path =  if let End::Out(_, v) = solve_maze(&map, true) {
             v
         } else {
             panic!("Bugged input :'(");
@@ -47,14 +47,14 @@ impl Day for Day06 {
                 continue;
             }
             map[i][j] = '#';
-            if solve_maze(&map) == End::Infinite {
+            if solve_maze(&map, false) == End::Infinite {
                 res += 1;
             }
             map[i][j] = '.';
 
         }
-        println!("Should be 1703");
-        assert!(1703 == res);
+        // println!("Should be 1703");
+        // assert!(1703 == res);
         format!("{}", res)
         // 1563 too low
     }
@@ -79,20 +79,20 @@ impl fmt::Display for End {
     }
 }
 
-fn solve_maze(map: &Vec<Vec<char>>) -> End {
+fn solve_maze(map: &Vec<Vec<char>>, count_visited: bool) -> End {
     let mut guard: (isize, isize) = map.iter().enumerate().filter_map(|(i, l)|_find_guard((i, &l))).next().unwrap();
     // map[guard.1][guard.0] as char == '^'
     let dirs = [(-1,0), (0,1), (1,0), (0,-1)];
     let mut dir_idx = 0;
     let mut visited: HashSet<(isize, isize)> = HashSet::new();
-    let mut visited_with_dirs = HashSet::new();
+    let mut visited_with_dirs = HashSet::with_capacity(5000);
     while get(&map, guard.1, guard.0) != None {
         let guard_dirs = (guard.clone(), dirs[dir_idx].clone());
         if visited_with_dirs.contains(&guard_dirs){
             return End::Infinite;
         }
         visited_with_dirs.insert(guard_dirs);
-        if ! visited.contains(&guard) {
+        if count_visited && ! visited.contains(&guard) {
             visited.insert(guard.clone());
         }
 
