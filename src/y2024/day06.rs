@@ -23,39 +23,35 @@ impl Day for Day06 {
     fn solve_part1(&self, input: &str) -> String {
         let map: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
         println!("Should be 4602");
-        let res = solve_maze(&map);
-        assert!(End::Out(4602) == res);
+        let res = if let End::Out(n, _) = solve_maze(&map) {
+            n
+        } else {
+            panic!("Bugged input :'(");
+        };
+        assert!(4602 == res);
         format!("{}", res)
     }
 
     fn solve_part2(&self, input: &str) -> String {
         let mut map: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
-        // let mut map: Vec<&[u8]> = input.lines().map(str::as_bytes).collect();
-        let h = map.len();
-        let w = map[0].len();
         let mut res = 0;
-        // let guard: (isize, isize) = map.iter().enumerate().filter_map(|(i, l)|_find_guard((i, &l))).next().unwrap();
-        for i in 0..h {
-            if i%20 == 0 {
-                println!("Testing {}/{} {}", i, h, res);
+        let normal_path =  if let End::Out(_, v) = solve_maze(&map) {
+            v
+        } else {
+            panic!("Bugged input :'(");
+        };
+        for (i, j) in normal_path {
+            let i = i as usize;
+            let j = j as usize;
+            if map[i][j] == '#' || map[i][j] == '^' {
+                continue;
             }
-            for j in 0..w {
-                if map[i][j] == '#' || map[i][j] == '^' {
-                    continue;
-                }
-                map[i][j] = '#';
-                if solve_maze(&map) == End::Infinite {
-                    res += 1;
-                    map[i][j] = 'O';
-                } else {
-                    map[i][j] = '.';
+            map[i][j] = '#';
+            if solve_maze(&map) == End::Infinite {
+                res += 1;
+            }
+            map[i][j] = '.';
 
-                }
-            }
-        }
-        for line in map {
-            let a: String = line.into_iter().collect();
-            println!("{}", a);
         }
         println!("Should be 1703");
         assert!(1703 == res);
@@ -68,16 +64,16 @@ impl Day for Day06 {
     
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 enum End {
-    Out(i32), // nb of steps to be out
+    Out(i32, HashSet<(isize, isize)>), // nb of steps to be out
     Infinite
 }
 
 impl fmt::Display for End {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            End::Out(nb) => write!(f, "End::Out({})", nb),
+            End::Out(nb, _) => write!(f, "End::Out({})", nb),
             End::Infinite => write!(f, "End::Infinite"),
         }
     }
@@ -88,7 +84,7 @@ fn solve_maze(map: &Vec<Vec<char>>) -> End {
     // map[guard.1][guard.0] as char == '^'
     let dirs = [(-1,0), (0,1), (1,0), (0,-1)];
     let mut dir_idx = 0;
-    let mut visited = HashSet::new();
+    let mut visited: HashSet<(isize, isize)> = HashSet::new();
     let mut visited_with_dirs = HashSet::new();
     while get(&map, guard.1, guard.0) != None {
         let guard_dirs = (guard.clone(), dirs[dir_idx].clone());
@@ -116,5 +112,5 @@ fn solve_maze(map: &Vec<Vec<char>>) -> End {
         guard = (guard.0 + dirs[dir_idx].0, guard.1 + dirs[dir_idx].1);
         // check next and switch direction
     }
-    End::Out(visited.len() as i32)
+    End::Out(visited.len() as i32, visited)
 }
