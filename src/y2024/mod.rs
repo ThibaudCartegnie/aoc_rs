@@ -6,9 +6,9 @@ mod day05;
 mod day06;
 mod day07;
 mod day08;
-// mod day09;
-// mod day10;
-// mod day11;
+mod day09;
+mod day10;
+mod day11;
 // mod day12;
 // mod day13;
 // mod day14;
@@ -39,9 +39,9 @@ impl Year for Year2024 {
             6 => Some(Box::new(day06::Day06)),
             7 => Some(Box::new(day07::Day07)),
             8 => Some(Box::new(day08::Day08)),
-//             9 => Some(day09::Day09),
-//             10 => Some(day10::Day10),
-//             11 => Some(day11::Day11),
+            9 => Some(Box::new(day09::Day09)),
+            10 => Some(Box::new(day10::Day10)),
+            11 => Some(Box::new(day11::Day11)),
 //             12 => Some(day12::Day12),
 //             13 => Some(day13::Day13),
 //             14 => Some(day14::Day14),
@@ -70,9 +70,9 @@ impl Year for Year2024 {
             6,
             7,
             8,
-            // 9,
-            // 10,
-            // 11,
+            9,
+            10,
+            11,
             // 12,
             // 13,
             // 14,
