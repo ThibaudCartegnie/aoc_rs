@@ -123,10 +123,10 @@ impl Day for Day09 {
                 }
             }
         }
-        print_t(&expanded[0..100.min(expanded.len())]);
-        print_t(&reduced[0..100.min(reduced.len())]);
+        // print_t(&expanded[0..100.min(expanded.len())]);
+        // print_t(&reduced[0..100.min(reduced.len())]);
         let res = reduced.iter().enumerate().fold(0, |acc, (i, n)| acc + i * if let Some(nb) = n { *nb as usize} else { 0 });
-        println!("Part 2: 6409057127686 too high :'(");
+        // println!("Part 2: 6409057127686 too high :'(");
         format!("{}", res)
     }
 }
@@ -141,7 +141,7 @@ fn _print(v: &Vec<Option<u32>>) {
     println!("")
 }
 
-fn print_t(v: &[Option<u32>]) {
+fn _print_t(v: &[Option<u32>]) {
     for n in v {
         match n {
             None => print!("'.'"),

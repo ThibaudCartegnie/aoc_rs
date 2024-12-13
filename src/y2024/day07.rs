@@ -64,8 +64,23 @@ impl Day for Day07 {
 
     fn solve_part2(&self, input: &str) -> String {
         let lines: Vec<Line> = input.lines().map(|l| Line::from(l)).collect();
+        let partial_ops = [Operator::Plus, Operator::Times];
         let ops = [Operator::Plus, Operator::Times, Operator::Concat];
-        let res = lines.iter().fold(0, |acc, l| if l.possible(&ops) { acc + l.result } else { acc });
-        format!("{}", res)
+        // let res = lines.iter().fold(0, |acc, l| if l.possible(&ops) { acc + l.result } else { acc });
+        let mut res = 0;
+        let mut ns = (0,0,0,0,0);
+        for l in lines.iter() {
+            if l.possible(&partial_ops) {
+                res += l.result;
+                ns.0 += 1;
+            } else if l.possible(&ops) {
+                ns.3 += 1;
+                res += l.result;
+            } else {
+                ns.4 += 1;
+            }
+
+        }
+        format!("{}: {:?}", res, ns)
     }
 }
