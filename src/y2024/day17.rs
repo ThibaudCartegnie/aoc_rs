@@ -1,4 +1,4 @@
-use std::thread;
+// use std::thread;
 
 use itertools::Itertools;
 
@@ -41,61 +41,83 @@ impl Day for Day17 {
             }
         }
 
-        let mut output = Vec::new();
-        let mut registers;
-        let mut a = -1;
-        let goal = vec![2,4,1];
-        while output != goal {
-            a += 1 as i64;
-            registers = (a, 0, 0);
-            println!("Test {:?}", &registers);
-            output = run_program(&instructions, &mut registers);
-        }
-        println!("Found! {}", a);
+        // let mut output = Vec::new();
+        // let mut registers;
+        // let mut a = -1;
+        // let goal = vec![2,4,1];
+        // while output != goal {
+        //     a += 1 as i64;
+        //     registers = (a, 0, 0);
+        //     println!("Test {:?}", &registers);
+        //     output = run_program(&instructions, &mut registers);
+        // }
+        // println!("Found! {}", a);
 
-        loop {
-            let mut reg = String::new();
-            std::io::stdin().read_line(&mut reg).unwrap();
-            let reg: i64 = reg.trim().parse().unwrap();
-            registers = (reg, 0, 0);
-            let output = run_program(&instructions, &mut registers);
-            println!("{:?}", output);
-        }
-        return "".into();
-
-        let start: i64 = 51000000000;
-        let n_thread = 1; //thread::available_parallelism().unwrap().get();
-
-        let mut threads = Vec::new();
-        for i in 0..n_thread {
-            let instructions = instructions.clone();
-            threads.push(thread::spawn(move || {
-                let mut output = Vec::new();
-                let mut registers;
-                let mut a = i as i64 - n_thread as i64;
-                while output != instructions {
-                    a += n_thread as i64;
-                    if a % 1_000_000_000 == 0 {
-                        println!("Attempt {}", a);
-                    }
-                    registers = (a, 0, 0);
-                    output = run_program(&instructions, &mut registers);
+        let mut solution: Vec<i64> = Vec::new();
+        
+        let mut letsgong = 0;
+        for n_i in (0..instructions.len()).rev() {
+            for i in 0..8 {
+                let mut input = i;
+                for (pow, val) in solution.iter().rev().enumerate() {
+                    input += val* 8i64.pow(pow as u32 + 1);
                 }
-                println!("FOUND IT {}", a);
-                println!("FOUND IT {}", a);
-                println!("FOUND IT {}", a);
-                println!("FOUND IT {}", a);
-                println!("FOUND IT {}", a);
-                println!("FOUND IT {}", a);
-                println!("FOUND IT {}", a);
-            }));
+                registers = (input, 0, 0);
+
+                let output = run_program(&instructions, &mut registers);
+                if output == instructions[n_i..] {
+                    println!("Ok with register : {}", input);
+                    letsgong = input;
+                    solution.push(i);
+                    break;
+                }
+            }
+            println!("instruction n{}, sol: {:?}", n_i, solution);
         }
 
-        for t in threads {
-            t.join();
-        }
+        // loop {
+        //     let mut reg = String::new();
+        //     std::io::stdin().read_line(&mut reg).unwrap();
+        //     let reg: i64 = reg.trim().parse().unwrap();
+        //     registers = (reg, 0, 0);
+        //     let output = run_program(&instructions, &mut registers);
+        //     println!("{:?}", output);
+        // }
+        // return "".into();
 
-        format!("")
+        // let start: i64 = 51000000000;
+        // let n_thread = 1; //thread::available_parallelism().unwrap().get();
+
+        // let mut threads = Vec::new();
+        // for i in 0..n_thread {
+        //     let instructions = instructions.clone();
+        //     threads.push(thread::spawn(move || {
+        //         let mut output = Vec::new();
+        //         let mut registers;
+        //         let mut a = i as i64 - n_thread as i64;
+        //         while output != instructions {
+        //             a += n_thread as i64;
+        //             if a % 1_000_000_000 == 0 {
+        //                 println!("Attempt {}", a);
+        //             }
+        //             registers = (a, 0, 0);
+        //             output = run_program(&instructions, &mut registers);
+        //         }
+        //         println!("FOUND IT {}", a);
+        //         println!("FOUND IT {}", a);
+        //         println!("FOUND IT {}", a);
+        //         println!("FOUND IT {}", a);
+        //         println!("FOUND IT {}", a);
+        //         println!("FOUND IT {}", a);
+        //         println!("FOUND IT {}", a);
+        //     }));
+        // }
+
+        // for t in threads {
+        //     t.join();
+        // }
+
+        format!("LET GO LA TEAM EN FAIT {}", letsgong)
     }
 }
 
@@ -121,7 +143,7 @@ fn run_program(instructions: &Vec<i64>, registers: &mut (i64, i64, i64)) -> Vec<
             Some(op) => *op,
             None => break
         };
-        // println!("ip={}, op {},{} or {}, reg={:?}", ip, op, instructions[ip+1], combo(instructions[ip+1], registers), &registers);
+        // println!("ip={}, op {},{} or {}, reg=({:o}, {:o}, {:o})", ip, op, instructions[ip+1], combo(instructions[ip+1], registers), registers.0, registers.1, registers.2);
         match op {
             0 => { // adv
                 registers.0 = registers.0 / 2i64.pow(combo(instructions[ip+1], &registers) as u32);
