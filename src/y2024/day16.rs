@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use pathfinding::prelude::astar;
+use pathfinding::prelude::{astar, astar_bag_collect};
 
 use crate::common::Day;
 
@@ -67,13 +67,14 @@ impl Day for Day16 {
 
         let mut map2 = map.clone();
 
-        let res1 = astar_custom(&map);
-        mark_path(&mut map, &res1.as_ref().unwrap());
+        // Ca marche masi c'est long (10s), j'optimeserai ça un jour peut etre
+        // let res1 = astar_custom(&map);
+        // mark_path(&mut map, &res1.as_ref().unwrap());
 
 
         let goal = Pos(map.end.0 as i32, map.end.1 as i32, 0, 0);
         let start = Pos(map.start.0 as i32, map.start.1 as i32, 1, 0);
-        let result = astar(&start, |p| p.successors(&map2), |p| p.distance(&goal) / 3,
+        let result = astar(&start, |p| p.successors(&map2), |p| p.distance(&goal),
                    |p| p.0 == goal.0 && p.1 == goal.1);
 
         mark_path_pos(&mut map2, &result.as_ref().unwrap().0);
@@ -90,11 +91,49 @@ impl Day for Day16 {
             println!("");
         }
 
-        format!("")
+        format!("{} = 85396, custom = {:?}", result.unwrap().1, "Commented because flemme of optimizing sorry")
     }
 
     fn solve_part2(&self, input: &str) -> String {
-        format!("{:?}", 85396)
+
+        let map = input.lines().map(|l | l.chars().collect_vec()).collect_vec();
+        let mut start = (0, 0);
+        let mut end = (0, 0);
+        'outer: for (y, line) in map.iter().enumerate() {
+            for (x, c) in line.iter().enumerate() {
+                if *c == 'S' {
+                    start = (x, y);
+                } else if *c == 'E' {
+                    end = (x, y);
+                }
+
+                if start.0 != 0 && end.0 != 0 {
+                    break 'outer;
+                }
+            }
+        }
+        let h = map.len() as i64;
+        let w = map[0].len() as i64;
+
+        let mut map = Map {
+            m: map,
+            h: h,
+            w: w,
+            start: start,
+            end: end
+        };
+
+        let goal = Pos(map.end.0 as i32, map.end.1 as i32, 0, 0);
+        let start = Pos(map.start.0 as i32, map.start.1 as i32, 1, 0);
+        let result = astar_bag_collect(&start, |p| p.successors(&map), |p| p.distance(&goal),
+                   |p| p.0 == goal.0 && p.1 == goal.1).unwrap();
+        
+        let mut a = result.0.iter().flatten().collect_vec();
+        a.sort();
+        a.dedup_by(|a, b| a.0 == b.0 && a.1 == b.1);
+
+
+        format!("{}", a.len())
     }
 }
 
@@ -106,8 +145,8 @@ struct Map {
     start: (usize, usize),
     end: (usize, usize)
 }
-
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[allow(unused)]
+#[derive(Debug, Clone)]
 struct Node {
     x: usize,
     y: usize,
@@ -118,6 +157,13 @@ struct Node {
     parents: Vec<Node>
 }
 
+impl PartialEq for Node {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y && self.dir == other.dir
+    }
+}
+
+#[allow(unused)]
 impl Node {
     fn cp_no_parents(&self) -> Node {
         Node { x: self.x, y: self.y, dir: self.dir, f: self.f, g: self.g, h: self.h, parents: Vec::new() }
@@ -148,7 +194,7 @@ impl Node {
 fn distance(a: (usize, usize), b: (usize, usize)) -> usize {
     a.0.abs_diff(b.0) + a.1.abs_diff(b.1)
 }
-
+#[allow(unused)]
 fn astar_custom(map: &Map) -> Option<Node> {
     let mut open: Vec<Node> = Vec::with_capacity(512);
     let mut close: Vec<Node> = Vec::with_capacity(512);
@@ -171,7 +217,8 @@ fn astar_custom(map: &Map) -> Option<Node> {
             if nx >= 0 && nx < map.w && ny >= 0 && ny < map.h && map.m[ny as usize][nx as usize] != '#' {
                 let node = Node::new(&map, nx as usize, ny as usize, Some(&cur), (*dx, *dy));
                 for (_, n) in open.iter().enumerate() {
-                    if n.x == node.x && n.y == node.y {
+                    if n.x == node.x && n.y == node.y && n.dir == node.dir {
+                    // if n == &node {
                         if n.f < node.f {
                             // skipping this node
                             continue 'dirs;
@@ -181,7 +228,8 @@ fn astar_custom(map: &Map) -> Option<Node> {
                 }
 
                 for (_, n) in close.iter().enumerate() {
-                    if n.x == node.x && n.y == node.y {
+                    if n.x == node.x && n.y == node.y && n.dir == node.dir {
+                    // if n == &node {
                         if n.f < node.f {
                             // skipping this node
                             continue 'dirs;
@@ -200,6 +248,7 @@ fn astar_custom(map: &Map) -> Option<Node> {
     return None;
 }
 
+#[allow(unused)]
 fn mark_path(map: &mut Map, node: &Node) {
     for n in &node.parents {
         let dir = match n.dir {
@@ -213,6 +262,7 @@ fn mark_path(map: &mut Map, node: &Node) {
     }
 }
 
+#[allow(unused)]
 fn mark_path_pos(map: &mut Map, nodes: &Vec<Pos>) {
     for Pos(x, y, dx, dy) in nodes.iter() {
         let dir = match (dx, dy) {
