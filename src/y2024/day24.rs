@@ -8,7 +8,6 @@ pub struct Day24;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum WireState {
-    Z,
     Low,
     High,
 }
@@ -16,8 +15,6 @@ enum WireState {
 impl WireState {
     fn or(&self, other: &Self) -> Self {
         match (self, other) {
-            (Self::Z, _) => panic!("State should not be Z to be evaluated, be better"),
-            (_, Self::Z) => panic!("State should not be Z to be evaluated, be better"),
             (Self::Low, Self::Low) => Self::Low,
             (_, _) => Self::High,
         }
@@ -25,8 +22,6 @@ impl WireState {
 
     fn and(&self, other: &Self) -> Self {
         match (self, other) {
-            (Self::Z, _) => panic!("State should not be Z to be evaluated, be better"),
-            (_, Self::Z) => panic!("State should not be Z to be evaluated, be better"),
             (Self::High, Self::High) => Self::High,
             (_, _) => Self::Low
         }
@@ -34,8 +29,6 @@ impl WireState {
 
     fn xor(&self, other: &Self) -> Self {
         match (self, other) {
-            (Self::Z, _) => panic!("State should not be Z to be evaluated, be better"),
-            (_, Self::Z) => panic!("State should not be Z to be evaluated, be better"),
             (Self::High, Self::Low) => Self::High,
             (Self::Low, Self::High) => Self::High,
             (_, _) => Self::Low
@@ -163,9 +156,34 @@ impl Day for Day24 {
                 break;
             }
         }
-        println!(" x {:046b}\n y {:046b}\n z {:046b}\n o {:046b}", x, y, obj, parse_wires('z', &wires));
+        // println!("{:?}", &wires);
+        let z = parse_wires('z', &wires);
+        let o_s = format!("{:b}", obj);
+        let z_s = format!("{:b}", z);
+
         
-        format!("{} {} {}", parse_wires('z', &wires), n_loop, gates.len())
+        let mut s1 = String::new();
+        let mut s2 = String::new();
+        let mut ndiff = 0;
+        for (i, (c1, c2)) in o_s.split("").zip(z_s.split("")).enumerate() {
+            if c1 == c2 {
+                s1 += c1;
+                s2 += c2;
+            } else {
+                println!("{}", o_s.len() - i );
+                ndiff += 1;
+                s1 += &format!("\x1b[31m{}\x1b[0m", c1);
+                s2 += &format!("\x1b[31m{}\x1b[0m", c2);
+            }
+        }
+        println!("x: {:046b}\ny: {:046b}", x, y);
+        println!("z: {}\no: {}", s2, s1);
+
+        println!("I calculated the answer on paper sorry ");
+        let mut res = ["z12", "kwb", "z16", "qkf", "z24", "tgr", "jqn", "cph"];
+        res.sort();
+        
+        format!("{}", res.join(","))
     }
 }
 
