@@ -23,18 +23,20 @@ fn is_design_possible(design: &'static str, patterns: &Vec<&str>) -> bool {
 } 
 #[memoize(Ignore: patterns)]
 fn count_possible_designs(design: &'static str, patterns: &Vec<&str>) -> i64 {
-    let is_a_pattern = patterns.contains(&design);
-    if design.len() == 1 {
-        match is_a_pattern {
-            true => 1,
-            false => 0,
-        }
+    // let is_a_pattern = patterns.contains(&design);
+    // println!("Count {}, is a pattern: {}", design, is_a_pattern);
+    if design.len() == 0 {
+        1
     } else {
-        let mut possibilities = 0;
-        for i in 0..design.len() {
-            possibilities += count_possible_designs(&design[..i], patterns) * count_possible_designs(&design[i..], patterns);
+        let mut count = 0;
+        for p in patterns {
+            if design.starts_with(p) {
+                count += count_possible_designs(&design[p.len()..], patterns)
+            }
         }
-        possibilities
+
+        // println!("After recursion: d: {}, possibilities: {}", design, possibilities);
+        count
     }
 }
 
@@ -76,6 +78,8 @@ impl Day for Day19 {
 
         let mut res = 0;
         for d in designs {
+            println!("{}; {}", d, &d[..0]);
+
             if is_design_possible(d, &towels) {
                 res += count_possible_designs(d, &towels)
             }

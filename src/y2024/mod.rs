@@ -22,7 +22,7 @@ mod day21;
 mod day22;
 mod day23;
 mod day24;
-// mod day25;
+mod day25;
 
 use crate::common::{Day, Year};
 
@@ -55,7 +55,7 @@ impl Year for Year2024 {
             22 => Some(Box::new(day22::Day22)),
             23 => Some(Box::new(day23::Day23)),
             24 => Some(Box::new(day24::Day24)),
-//             25 => Some(day25::Day25),
+            25 => Some(Box::new(day25::Day25)),
             _ => None,
         }
     }
@@ -86,7 +86,7 @@ impl Year for Year2024 {
             22,
             23,
             24,
-            // 25,
+            25,
         )
     }
 }
