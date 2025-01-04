@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use itertools::Itertools;
-use pathfinding::prelude::{bfs, dijkstra};
+use pathfinding::prelude::dijkstra;
 
 use crate::common::Day;
 
@@ -35,7 +35,6 @@ impl Pos {
 
     fn successors_with_cheat(&self, map: &Vec<Vec<char>>, cheat_length: i64) -> Vec<(Pos, u32)> {
         let &Pos(x, y) = self;
-        let dirs = [(0,1), (1,0), (0,-1), (-1,0)];
         let w = map[0].len() as i64;
         let h = map.len() as i64;
         let mut sucs = Vec::with_capacity(4);
@@ -57,20 +56,6 @@ impl Pos {
             }
         }
 
-        // for (ndx, ndy) in dirs.iter().rev() {
-        //     for cx in 1..=cheat_length {
-        //         for cy in 1..=cheat_length {
-        //             let nx = x + ndx*cx;
-        //             let ny = y + ndy*cy;
-        //             if nx >= 0 && nx < w && ny >= 0 && ny < h && map[ny as usize][nx as usize] != '#' {
-        //                 let np = Pos(nx, ny);
-        //                 if self.distance(&np) <= cheat_length as u32 {
-        //                     sucs.push((Pos(nx, ny), 1));
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
         sucs
     }
 }
@@ -146,7 +131,6 @@ impl Day for Day20 {
         let end = Pos(end.0, end.1);
 
         let path = dijkstra(&start, |p| p.successors(&map), |p| *p == end).unwrap();
-        println!("{} {}", path.0.len(), path.1);
 
         let mut path_map = HashMap::with_capacity(path.0.len());
         for (i, p) in path.0.iter().enumerate() {

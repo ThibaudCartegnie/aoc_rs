@@ -8,7 +8,6 @@ pub struct Day24;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum WireState {
-    Z,
     Low,
     High,
 }
@@ -16,8 +15,6 @@ enum WireState {
 impl WireState {
     fn or(&self, other: &Self) -> Self {
         match (self, other) {
-            (Self::Z, _) => panic!("State should not be Z to be evaluated, be better"),
-            (_, Self::Z) => panic!("State should not be Z to be evaluated, be better"),
             (Self::Low, Self::Low) => Self::Low,
             (_, _) => Self::High,
         }
@@ -25,8 +22,6 @@ impl WireState {
 
     fn and(&self, other: &Self) -> Self {
         match (self, other) {
-            (Self::Z, _) => panic!("State should not be Z to be evaluated, be better"),
-            (_, Self::Z) => panic!("State should not be Z to be evaluated, be better"),
             (Self::High, Self::High) => Self::High,
             (_, _) => Self::Low
         }
@@ -34,8 +29,6 @@ impl WireState {
 
     fn xor(&self, other: &Self) -> Self {
         match (self, other) {
-            (Self::Z, _) => panic!("State should not be Z to be evaluated, be better"),
-            (_, Self::Z) => panic!("State should not be Z to be evaluated, be better"),
             (Self::High, Self::Low) => Self::High,
             (Self::Low, Self::High) => Self::High,
             (_, _) => Self::Low
