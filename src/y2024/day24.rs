@@ -156,11 +156,7 @@ impl Day for Day24 {
                 break;
             }
         }
-        // println!("{:?}", &wires);
-        let z = parse_wires('z', &wires);
-        let o_s = format!("{:b}", obj);
-        let z_s = format!("{:b}", z);
-
+        // println!(" x {:046b}\n y {:046b}\n z {:046b}\n o {:046b}", x, y, obj, parse_wires('z', &wires));
         
         let mut s1 = String::new();
         let mut s2 = String::new();

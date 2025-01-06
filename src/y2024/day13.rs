@@ -24,7 +24,7 @@ impl Machine {
         let (xb, yb) = self.but_b;
         let (xp, yp) = self.prize;
         if xa == 0 || yb*xa-xb*ya == 0 {
-            println!("Incompatible: {} {} : m={:?}", xa, yb*xa-xb*ya, &self);
+            // println!("Incompatible: {} {} : m={:?}", xa, yb*xa-xb*ya, &self);
             return None;
         }
 
