@@ -103,6 +103,7 @@ fn download_input(year: usize, day: usize) {
     }
 
     let path = format!("input/y{}/d{}.txt", year, day);
+    let _ = fs::create_dir_all(format!("input/y{}/", year));
     fs::write(path, resp).unwrap();
 }
 
