@@ -89,6 +89,6 @@ impl Day for Day25 {
     }
 
     fn solve_part2(&self, input: &str) -> String {
-        format!("")
+        format!("JOYEUX NOEL")
     }
 }
