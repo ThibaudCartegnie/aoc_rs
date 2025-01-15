@@ -88,7 +88,7 @@ impl Day for Day21 {
             let code: usize = line[..line.len()-1].parse().unwrap();
             let path = line.chars().collect_vec();
             let min_path = shortest(path, 3, true, &ctx);
-            println!("{} : {}*{}={}, Path: {}", line, code, min_path.len(), code*min_path.len(), min_path.iter().join(""));
+            // println!("{} : {}*{}={}, Path: {}", line, code, min_path.len(), code*min_path.len(), min_path.iter().join(""));
             res += code*min_path.len();
         }
 
@@ -123,7 +123,7 @@ impl Day for Day21 {
             let code: i128 = line[..line.len()-1].parse().unwrap();
             let path = line.chars().collect_vec();
             let min_path = shortest_only_size(path, 26, true, &ctx);
-            println!("{} : {}*{}={}", line, code, min_path, code*min_path);
+            // println!("{} : {}*{}={}", line, code, min_path, code*min_path);
             res += code*min_path;
         }
 

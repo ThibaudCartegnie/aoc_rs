@@ -78,7 +78,7 @@ impl Day for Day19 {
 
         let mut res = 0;
         for d in designs {
-            println!("{}; {}", d, &d[..0]);
+            // println!("{}; {}", d, &d[..0]);
 
             if is_design_possible(d, &towels) {
                 res += count_possible_designs(d, &towels)

@@ -55,7 +55,6 @@ impl Day for Day10 {
                         .map(|(x, n)| parse_and_put_zeros_aside(n, (x, y), &mut zeros))
                         .collect())
                 .collect();
-        println!("bru");
         let mut res = 0;
         for (x, y) in zeros.iter() {
             let mut visited = Vec::with_capacity(256);

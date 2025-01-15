@@ -80,16 +80,16 @@ impl Day for Day16 {
         mark_path_pos(&mut map2, &result.as_ref().unwrap().0);
         // _print_map(&map.m);
 
-        for (l1, l2) in map.m.iter().zip(map2.m.iter()) {
-            for (c1, c2) in l1.iter().zip(l2.iter()) {
-                if c1 == c2 {
-                    print!("{}", c1);
-                } else {
-                    print!("\x1b[31m{}\x1b[0m", c1);
-                }
-            }
-            println!("");
-        }
+        // for (l1, l2) in map.m.iter().zip(map2.m.iter()) {
+        //     for (c1, c2) in l1.iter().zip(l2.iter()) {
+        //         if c1 == c2 {
+        //             print!("{}", c1);
+        //         } else {
+        //             print!("\x1b[31m{}\x1b[0m", c1);
+        //         }
+        //     }
+        //     println!("");
+        // }
 
         format!("{} = 85396, custom = {:?}", result.unwrap().1, "Commented because flemme of optimizing sorry")
     }
@@ -204,7 +204,7 @@ fn astar_custom(map: &Map) -> Option<Node> {
     while open.len() != 0 {
         let (idx, cur) = open.iter().enumerate().min_by(|(_, a), (_, b) | a.f.cmp(&b.f)).unwrap();
         if cur.x == map.end.0 && cur.y == map.end.1 {
-            println!("Found the end! {:?}", &cur);
+            // println!("Found the end! {:?}", &cur);
             // mark_path(&mut map, cur);
             // _print_map(&map.m);
             return Some(cur.clone());

@@ -66,13 +66,13 @@ impl Day for Day17 {
 
                 let output = run_program(&instructions, &mut registers);
                 if output == instructions[n_i..] {
-                    println!("Ok with register : {}", input);
+                    // println!("Ok with register : {}", input);
                     letsgong = input;
                     solution.push(i);
                     break;
                 }
             }
-            println!("instruction n{}, sol: {:?}", n_i, solution);
+            // println!("instruction n{}, sol: {:?}", n_i, solution);
         }
 
         // loop {

@@ -92,12 +92,15 @@ fn get_input(year: usize, day: usize, example_if_any: bool) -> String {
 }
 
 fn download_input(year: usize, day: usize) {
-    let session_cookie = std::env::var("AOC_SESSION_COOKIE").unwrap_or_else(|_e| panic!("You need to setup AOC_SESSION_COOKIE env variable to download the inputs"));
+    let session_cookie = std::env::var("AOC_SESSION_COOKIE").unwrap_or_else(|e| panic!("You need to setup AOC_SESSION_COOKIE env variable to download the inputs : {}", e));
     let client = reqwest::blocking::ClientBuilder::new().build().unwrap();
     let req = client.get(format!("https://adventofcode.com/{}/day/{}/input", year, day))
         .header("Cookie", format!("session={}", session_cookie))
         .build().unwrap();
     let resp = client.execute(req).unwrap().text().unwrap();
+    if resp.starts_with("Puzzle inputs differ by user.") {
+        panic!("The downloaded input is incorrect, please set a correct AOC_SESSION_COOKIE env variable");
+    }
 
     let path = format!("input/y{}/d{}.txt", year, day);
     fs::write(path, resp).unwrap();

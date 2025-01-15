@@ -170,16 +170,16 @@ impl Day for Day24 {
                 s1 += c1;
                 s2 += c2;
             } else {
-                println!("{}", o_s.len() - i );
+                // println!("{}", o_s.len() - i );
                 ndiff += 1;
                 s1 += &format!("\x1b[31m{}\x1b[0m", c1);
                 s2 += &format!("\x1b[31m{}\x1b[0m", c2);
             }
         }
-        println!("x: {:046b}\ny: {:046b}", x, y);
-        println!("z: {}\no: {}", s2, s1);
+        // println!("x: {:046b}\ny: {:046b}", x, y);
+        // println!("z: {}\no: {}", s2, s1);
 
-        println!("I calculated the answer on paper sorry ");
+        println!("I calculated the answer on paper sorry :(");
         let mut res = ["z12", "kwb", "z16", "qkf", "z24", "tgr", "jqn", "cph"];
         res.sort();
         

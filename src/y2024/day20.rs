@@ -84,7 +84,7 @@ impl Day for Day20 {
         let end = Pos(end.0, end.1);
 
         let path = dijkstra(&start, |p| p.successors(&map), |p| *p == end).unwrap();
-        println!("{} {}", path.0.len(), path.1);
+        // println!("{} {}", path.0.len(), path.1);
 
         let mut path_map = HashMap::with_capacity(path.0.len());
         for (i, p) in path.0.iter().enumerate() {

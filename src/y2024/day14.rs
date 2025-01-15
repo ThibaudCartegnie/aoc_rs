@@ -127,13 +127,13 @@ impl Day for Day14 {
             robot.steps(min_score.0 as i64 + 1, h, w);
         }
 
-        print_robots(&original_robots, h, w, false);
+        // _print_robots(&original_robots, h, w, false);
         format!("{:?}", min_score.0 as i64 + 1)
     }
 }
 
 
-fn print_robots(robots: &Vec<Robot>, h: i64, w: i64, print_on_condition: bool) {
+fn _print_robots(robots: &Vec<Robot>, h: i64, w: i64, print_on_condition: bool) {
     let mut grid = vec![Vec::<char>::with_capacity(w as usize); h as usize];
     for line in grid.iter_mut() {
         for _ in 0..w {
