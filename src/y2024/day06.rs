@@ -66,7 +66,7 @@ impl Day for Day06 {
 
 #[derive(Debug, Clone, PartialEq)]
 enum End {
-    Out(i32, HashSet<(isize, isize)>), // nb of steps to be out
+    Out(i32, HashSet<(isize, isize), ahash::RandomState>), // nb of steps to be out
     Infinite
 }
 
@@ -84,8 +84,8 @@ fn solve_maze(map: &Vec<Vec<char>>, count_visited: bool) -> End {
     // map[guard.1][guard.0] as char == '^'
     let dirs = [(-1,0), (0,1), (1,0), (0,-1)];
     let mut dir_idx = 0;
-    let mut visited: HashSet<(isize, isize)> = HashSet::new();
-    let mut visited_with_dirs = HashSet::with_capacity(5000);
+    let mut visited= HashSet::with_capacity_and_hasher(2000, ahash::RandomState::new());
+    let mut visited_with_dirs = HashSet::with_capacity_and_hasher(5000, ahash::RandomState::new());
     while get(&map, guard.1, guard.0) != None {
         let guard_dirs = (guard.clone(), dirs[dir_idx].clone());
         if visited_with_dirs.contains(&guard_dirs){
