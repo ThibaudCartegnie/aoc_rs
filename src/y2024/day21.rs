@@ -83,6 +83,7 @@ impl Day for Day21 {
         };
 
         let mut res = 0;
+        let mut res2 = 0;
 
         for line in input.lines() {
             let code: usize = line[..line.len()-1].parse().unwrap();
@@ -90,9 +91,19 @@ impl Day for Day21 {
             let min_path = shortest(path, 3, true, &ctx);
             // println!("{} : {}*{}={}, Path: {}", line, code, min_path.len(), code*min_path.len(), min_path.iter().join(""));
             res += code*min_path.len();
+
+            let mut min_path_size = 0;
+            let mut previous = 'A';
+            for c in line.chars() {
+                let mut path = get_min_path(previous, c, &ctx);
+                min_path_size += path.len();
+                // println!("{}->{}: {:?}", previous, c, get_paths_from_one_lut(previous, c, &ctx.num_lut));
+                previous = c;
+            }
+            res2 += code*min_path_size;
         }
 
-        format!("158224 too low: {}", res)
+        format!("158224 too low: {} {}", res, res2)
     }
 
     fn solve_part2(&self, input: &str) -> String {
@@ -131,58 +142,58 @@ impl Day for Day21 {
     }
 }
 
-// #[memoize::memoize(Ignore: ctx)]
-// fn expand_paths(paths: Vec<Path>, ctx: &Context) -> Vec<Path> {
-//     let mut out = Vec::new();
-//     for path in paths {
-//         let mut expendend = expand_path(path, ctx);
-//         out.append(&mut expendend);
-//     }
-//     out
-// }
+#[memoize::memoize(Ignore: ctx)]
+fn expand_paths(paths: Vec<Path>, ctx: &Context) -> Vec<Path> {
+    let mut out = Vec::new();
+    for path in paths {
+        let mut expendend = expand_path(path, ctx);
+        out.append(&mut expendend);
+    }
+    out
+}
 
-// #[memoize(Ignore: ctx)]
-// fn expand_path(path: Path, ctx: &Context) -> Vec<Path> {
-//     let mut out = Vec::new();
-//     let mut previous = 'A';
-//     for c in path {
-//         let mut dir_kb_1_paths = get_paths_from_one_lut(previous, c, false, &ctx.dir_lut);
-//         if out.is_empty() {
-//             out.append(&mut dir_kb_1_paths);
-//         } else {
-//             let mut new_paths = Vec::with_capacity(out.len()*dir_kb_1_paths.len());
-//             for path in out.iter_mut() {
-//                 for append_path in dir_kb_1_paths.iter() {
-//                     let mut np = path.clone();
-//                     np.extend_from_slice(append_path.as_slice());
-//                     new_paths.push(np)
-//                 }
-//             }
-//             out = new_paths;
-//         }
-//         previous = c;
-//     }
-//     out
-// }
+#[memoize(Ignore: ctx)]
+fn expand_path(path: Path, ctx: &Context) -> Vec<Path> {
+    let mut out = Vec::new();
+    let mut previous = 'A';
+    for c in path {
+        let mut dir_kb_1_paths = get_paths_from_one_lut(previous, c, false, ctx);
+        if out.is_empty() {
+            out.append(&mut dir_kb_1_paths);
+        } else {
+            let mut new_paths = Vec::with_capacity(out.len()*dir_kb_1_paths.len());
+            for path in out.iter_mut() {
+                for append_path in dir_kb_1_paths.iter() {
+                    let mut np = path.clone();
+                    np.extend_from_slice(append_path.as_slice());
+                    new_paths.push(np)
+                }
+            }
+            out = new_paths;
+        }
+        previous = c;
+    }
+    out
+}
 
-// #[memoize::memoize(Ignore: ctx)]
-// fn get_min_path(from: char, to: char, ctx: &Context) -> Path {
+#[memoize::memoize(Ignore: ctx)]
+fn get_min_path(from: char, to: char, ctx: &Context) -> Path {
 
-//     let num_kb_paths = get_paths_from_one_lut(from, to, true, &ctx.num_lut);
-//     let paths1 = expand_paths(num_kb_paths, ctx);
-//     let paths2 = expand_paths(paths1, ctx);
-//     // let paths3 = expand_paths(paths2, ctx);
+    let num_kb_paths = get_paths_from_one_lut(from, to, true, ctx);
+    let paths1 = expand_paths(num_kb_paths, ctx);
+    let paths2 = expand_paths(paths1, ctx);
+    // let paths3 = expand_paths(paths2, ctx);
 
     
-//     let path = paths2.iter().min_by(|a,b| a.len().cmp(&b.len()));
-//     let min_path_len = path.unwrap().len();
+    // let path = paths2.iter().min_by(|a,b| a.len().cmp(&b.len()));
+    // let min_path_len = path.unwrap().len();
     
-//     let n_min_paths = paths2.iter().filter(|x| x.len() <= min_path_len).count();
-//     println!("{} -> {} : {} paths, {} min", from, to, paths2.len(), n_min_paths);
+    // let n_min_paths = paths2.iter().filter(|x| x.len() <= min_path_len).count();
+    // println!("{} -> {} : {} paths, {} min", from, to, paths2.len(), n_min_paths);
 
-//     let path = paths2.into_iter().min_by(|a,b| a.len().cmp(&b.len()));
-//     path.unwrap()
-// }
+    let path = paths2.into_iter().min_by(|a,b| a.len().cmp(&b.len()));
+    path.unwrap()
+}
 
 #[memoize(Ignore: ctx)]
 fn get_paths_from_one_lut(from: char, to: char, is_num: bool, ctx: &Context) -> Vec<Path> {
