@@ -208,6 +208,7 @@ fn move_box_vertical(map: &mut Vec<Vec<char>>, pos: &mut (i32, i32), dir_y: i32)
     
 }
 
+#[allow(unused)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum Movable {
     Yes(Vec<(i32, i32)>),
