@@ -1,6 +1,7 @@
 mod common;
 mod y2021;
 mod y2024;
+mod y2025;
 use std::fs;
 
 use common::Year;
@@ -124,9 +125,10 @@ fn get_year(year: usize) -> Option<Box<dyn Year>> {
     match year {
         2021 => Some(Box::new(y2021::Year2021)),
         2024 => Some(Box::new(y2024::Year2024)),
+        2025 => Some(Box::new(y2025::Year2025)),
         _ => None
     }
 }
 fn years() -> Vec<usize> {
-    vec!(2021, 2024)
+    vec!(2021, 2024, 2025)
 }
